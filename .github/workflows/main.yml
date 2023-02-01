@@ -7,60 +7,70 @@ jobs:
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
+        run: |
+          sed -i 's/_DB_SOURCE_/${{ secrets.DB_DATASOURCE }}/g' *
+          sed -i 's/_DB_USERNAME_/${{ secrets.DB_USERNAME }}/g' *
+          sed -i 's/_DB_SECRET_/${{ secrets.DB_SECRET }}/g' *
+          sed -i 's/_BOOTSTRAP_SERVER_/${{ secrets.KAFKA_BOOTSTRAP_SERVER }}/g' *
+          sed -i 's/_BOOTSTRAP_CONFIG_/${{ secrets.KAFKA_CONFIG }}/g' *
+          sed -i 's/_STORAGE_CONNECTION_/${{ secrets.AZURE_STORAGE_CONNECTION }}/g' *
+          sed -i 's/_NEO4J_URL_/${{ secrets.NEO4J_DB_SOURCE }}/g' *
+          sed -i 's/_NEO4J_USERNAME_/${{ secrets.NEO4J_DB_USERNAME }}/g' *
+          sed -i 's/_NEO4J_SECRET_/${{ secrets.NEO4J_DB_SECRET }}/g' *
 
-      - name: Replace DB Source
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_DB_SOURCE_"
-          replace: ${{ secrets.DB_DATASOURCE }}
-
-      - name: Replace DB User Name
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_DB_USERNAME_"
-          replace: ${{ secrets.DB_USERNAME }}
-
-      - name: Replace DB Password
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_DB_SECRET_"
-          replace: ${{ secrets.DB_SECRET }}
-
-      - name: Replace Kafka Server
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_BOOTSTRAP_SERVER_"
-          replace: ${{ secrets.KAFKA_BOOTSTRAP_SERVER }}
-
-      - name: Replace Kafka Config
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_BOOTSTRAP_CONFIG_"
-          replace: ${{ secrets.KAFKA_CONFIG }}
-
-      - name: Replace Storage Connection
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_STORAGE_CONNECTION_"
-          replace: ${{ secrets.AZURE_STORAGE_CONNECTION }}
-
-      - name: Replace Neo4J DB Url
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_NEO4J_URL_"
-          replace: ${{ secrets.NEO4J_DB_SOURCE }}
-
-      - name: Replace Neo4J DB User Name
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_NEO4J_USERNAME_"
-          replace: ${{ secrets.NEO4J_DB_USERNAME }}
-
-      - name: Replace Neo4J DB Password
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "_NEO4J_SECRET_"
-          replace: ${{ secrets.NEO4J_DB_SECRET }}
+#      - name: Replace DB Source
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_DB_SOURCE_"
+#          replace: ${{ secrets.DB_DATASOURCE }}
+#
+#      - name: Replace DB User Name
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_DB_USERNAME_"
+#          replace: ${{ secrets.DB_USERNAME }}
+#
+#      - name: Replace DB Password
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_DB_SECRET_"
+#          replace: ${{ secrets.DB_SECRET }}
+#
+#      - name: Replace Kafka Server
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_BOOTSTRAP_SERVER_"
+#          replace: ${{ secrets.KAFKA_BOOTSTRAP_SERVER }}
+#
+#      - name: Replace Kafka Config
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_BOOTSTRAP_CONFIG_"
+#          replace: ${{ secrets.KAFKA_CONFIG }}
+#
+#      - name: Replace Storage Connection
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_STORAGE_CONNECTION_"
+#          replace: ${{ secrets.AZURE_STORAGE_CONNECTION }}
+#
+#      - name: Replace Neo4J DB Url
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_NEO4J_URL_"
+#          replace: ${{ secrets.NEO4J_DB_SOURCE }}
+#
+#      - name: Replace Neo4J DB User Name
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_NEO4J_USERNAME_"
+#          replace: ${{ secrets.NEO4J_DB_USERNAME }}
+#
+#      - name: Replace Neo4J DB Password
+#        uses: jacobtomlinson/gha-find-replace@v2
+#        with:
+#          find: "_NEO4J_SECRET_"
+#          replace: ${{ secrets.NEO4J_DB_SECRET }}
 
       - name: 'Login via Azure CLI'
         uses: azure/login@v1
@@ -80,14 +90,7 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/org-service:latest -f org-service/Dockerfile
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/org-service:latest
-
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/multi-tenant-service:latest -f multi-tenant-service/Dockerfile
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/multi-tenant-service:latest
-
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/multi-tenant-management:latest -f multi-tenant-management/Dockerfile
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/multi-tenant-management:latest
+          mvn compile -P prod jib:build
 
       - name: 'Deploy Org Service to Azure Container Instances'
         uses: 'azure/aci-deploy@v1'
