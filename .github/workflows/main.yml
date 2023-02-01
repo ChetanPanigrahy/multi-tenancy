@@ -8,6 +8,18 @@ jobs:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
 
+#      - name: 'Update Configs'
+#        run: |
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_DB_SOURCE_/${{ secrets.DB_DATASOURCE }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_DB_USERNAME_/${{ secrets.DB_USERNAME }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_DB_SECRET_/${{ secrets.DB_SECRET }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_BOOTSTRAP_SERVER_/${{ secrets.KAFKA_BOOTSTRAP_SERVER }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_BOOTSTRAP_CONFIG_/${{ secrets.KAFKA_CONFIG }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_STORAGE_CONNECTION_/${{ secrets.AZURE_STORAGE_CONNECTION }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_NEO4J_URL_/${{ secrets.NEO4J_DB_SOURCE }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_NEO4J_USERNAME_/${{ secrets.NEO4J_DB_USERNAME }}/g" {} +
+#          find ./ -name "application-production.properties" -exec sed -i '' "s/_NEO4J_SECRET_/${{ secrets.NEO4J_DB_SECRET }}/g" {} +
+
       - name: Replace DB Source
         uses: jacobtomlinson/gha-find-replace@v2
         with:
