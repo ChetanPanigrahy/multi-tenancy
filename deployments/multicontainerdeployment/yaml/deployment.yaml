@@ -1,0 +1,38 @@
+apiVersion: '2021-09-01'
+location: eastus
+name: multiContainerGroup
+properties:
+  containers:
+  - name: orgsrvc
+    properties:
+      image: dockerchetan.azurecr.io/org-service:latest
+      ports:
+      - port: 80
+        protocol: TCP
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 1
+  - name: tenantmgmtsrvc
+    properties:
+      image: dockerchetan.azurecr.io/multi-tenant-management:latest
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+  imageRegistryCredentials:
+  - server: dockerchetan.azurecr.io
+    username: dockerchetan
+    password: /zdtoyZ9r6n37qrOG4GQKGp3hOG+fp/0yxhpDdCVcE+ACRCKDN05
+  ipAddress:
+    dnsNameLabel: multicontainergrouporgsrvc
+    fqdn: orgsrvcmulti.eastus.azurecontainer.io
+    ports:
+    - port: 80
+      protocol: TCP
+    type: Public
+  osType: Linux
+  restartPolicy: Always
+  sku: Standard
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups
