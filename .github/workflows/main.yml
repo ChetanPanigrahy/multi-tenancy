@@ -7,8 +7,6 @@ jobs:
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
-
-      - name: 'Update Configs'
         run: |
           sed -i 's/_DB_SOURCE_/${{ secrets.DB_DATASOURCE }}/g' *
           sed -i 's/_DB_USERNAME_/${{ secrets.DB_USERNAME }}/g' *
