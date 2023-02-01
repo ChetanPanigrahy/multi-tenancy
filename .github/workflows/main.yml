@@ -99,7 +99,7 @@ jobs:
             registry-username: ${{ secrets.REGISTRY_USERNAME }}
             registry-password: ${{ secrets.REGISTRY_PASSWORD }}
             name: org
-            location: 'west us'
+            location: 'east us'
 
       - name: 'Deploy Tenant Management Service to Azure Container Instances'
         uses: 'azure/aci-deploy@v1'
@@ -111,7 +111,7 @@ jobs:
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: tenantmgmt
-          location: 'west us'
+          location: 'east us'
 
       - name: 'Deploy Tenant Service to Azure Container Instances'
         uses: 'azure/aci-deploy@v1'
@@ -123,5 +123,5 @@ jobs:
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: tenant
-          location: 'west us'
+          location: 'east us'
 
